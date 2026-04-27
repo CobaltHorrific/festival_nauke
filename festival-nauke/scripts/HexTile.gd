@@ -17,6 +17,7 @@ signal tile_clicked(tile)
 func _ready() -> void:
 	_build_hex_shape()
 	_refresh_visuals()
+	_refresh_bonds()
 	add_to_group("tiles")
 
 func setup(p_element: String, p_edges: Array, p_fixed: bool = false) -> void:
@@ -25,6 +26,7 @@ func setup(p_element: String, p_edges: Array, p_fixed: bool = false) -> void:
 	is_fixed = p_fixed
 	if is_inside_tree():
 		_refresh_visuals()
+		_refresh_bonds()
 
 func _input(event: InputEvent) -> void:
 	if is_fixed:
@@ -55,3 +57,43 @@ func _refresh_visuals() -> void:
 			"N": polygon.color = Color("2471a3")
 			"S": polygon.color = Color("f1c40f")
 			_:   polygon.color = Color("1e3a5f")
+
+func _refresh_bonds() -> void:
+	# Obrisi stare linije
+	for child in get_children():
+		if child.name.begins_with("Bond_"):
+			child.queue_free()
+	
+	# Napravi nove
+	for i in 6:
+		var bond_count: int = edges[i]
+		if bond_count == 0:
+			continue
+		
+		var angle_a := deg_to_rad(60.0 * i)
+		var angle_b := deg_to_rad(60.0 * ((i + 1) % 6))
+		var vert_a := Vector2(cos(angle_a), sin(angle_a)) * RADIUS
+		var vert_b := Vector2(cos(angle_b), sin(angle_b)) * RADIUS
+		var mid := (vert_a + vert_b) / 2.0
+		var edge_dir := (vert_b - vert_a).normalized()
+		var perp := Vector2(-edge_dir.y, edge_dir.x) * 6.0
+		var color := Color(0.29, 0.87, 0.5, 1.0)
+		
+		match bond_count:
+			1:
+				_add_line("Bond_%d_0" % i, Vector2.ZERO, mid, color, 5.0)
+			2:
+				_add_line("Bond_%d_0" % i, perp, mid + perp, color, 4.0)
+				_add_line("Bond_%d_1" % i, -perp, mid - perp, color, 4.0)
+			3:
+				_add_line("Bond_%d_0" % i, Vector2.ZERO, mid, color, 6.0)
+				_add_line("Bond_%d_1" % i, perp * 1.8, mid + perp * 1.8, color, 4.0)
+				_add_line("Bond_%d_2" % i, -perp * 1.8, mid - perp * 1.8, color, 4.0)
+
+func _add_line(line_name: String, from: Vector2, to: Vector2, color: Color, width: float) -> void:
+	var line := Line2D.new()
+	line.name = line_name
+	line.points = PackedVector2Array([from, to])
+	line.default_color = color
+	line.width = width
+	add_child(line)

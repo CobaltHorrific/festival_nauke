@@ -1,0 +1,8 @@
+[gd_scene format=3 uid="uid://crx6eus0evjyd"]
+
+[ext_resource type="Script" uid="uid://ccc14trjc02oe" path="res://scripts/BoardSlot.gd" id="1_yo1gl"]
+
+[node name="BoardSlot" type="Node2D" unique_id=1965171649]
+script = ExtResource("1_yo1gl")
+
+[node name="Polygon2D" type="Polygon2D" parent="." unique_id=1607199833]

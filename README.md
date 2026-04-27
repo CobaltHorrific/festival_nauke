@@ -5,8 +5,8 @@ iz Spider-Man 2 (Plant Attributes minigame), prilagođena hemiji — atomi i
 hemijske veze umesto biljnih atributa.
 
 ## Tim
-- Sava — programiranje
-- Pavle — programiranje + muzika
+- Sava — programiranje + muzika
+- Pavle — programiranje 
 - Mina — dizajn / vizualni identitet
 
 ## Stack
