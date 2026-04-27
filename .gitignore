@@ -1,0 +1,17 @@
+# Godot 4+ specifično
+.godot/
+*.translation
+
+# Export
+export.cfg
+export_presets.cfg
+
+# Sistem
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE / editori
+.vscode/
+.idea/
+*.swp
