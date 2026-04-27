@@ -1,0 +1,19 @@
+[gd_scene format=3 uid="uid://bdp5vtpft3yr3"]
+
+[ext_resource type="Script" uid="uid://muuksr4tj8ka" path="res://scripts/HexTile.gd" id="1_k1oo0"]
+
+[node name="HexTile" type="Area2D" unique_id=756073703]
+script = ExtResource("1_k1oo0")
+
+[node name="Polygon2D" type="Polygon2D" parent="." unique_id=1198170632]
+
+[node name="Label" type="Label" parent="." unique_id=474428893]
+offset_left = -30.0
+offset_top = -20.0
+offset_right = 30.0
+offset_bottom = 20.0
+theme_override_font_sizes/font_size = 22
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="." unique_id=1453395988]
