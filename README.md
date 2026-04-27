@@ -1,9 +1,6 @@
 # Spoji Molekul
 
-Edukativna igrica za Festival nauke 2026. Inspirisana hex-puzzle mehanikom 
-iz Spider-Man 2 (Plant Attributes minigame), prilagođena hemiji — atomi i 
-hemijske veze umesto biljnih atributa.
-
+Edukativna igrica za Festival nauke 2026.
 ## Tim
 - Sava — programiranje + muzika
 - Pavle — programiranje 
