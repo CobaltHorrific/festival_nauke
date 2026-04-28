@@ -5,6 +5,7 @@ extends CanvasLayer
 @onready var hint_label = $WinScreen/HintLabel
 @onready var next_button = $WinScreen/NextButton
 @onready var reset_button = $ResetButton
+@onready var level_label = $LevelLabel
 
 signal next_level_pressed
 signal reset_pressed
@@ -14,10 +15,12 @@ func _ready() -> void:
 	next_button.pressed.connect(_on_next_pressed)
 	reset_button.pressed.connect(_on_reset_pressed)
 	
-	# Postavi reset dugme u donji levi ugao kroz kod
 	var vp := get_viewport().get_visible_rect().size
 	reset_button.position = Vector2(20, vp.y - 120)
 	reset_button.size = Vector2(120, 40)
+	level_label.position = Vector2(vp.x / 2.0 - 150, 30)
+	level_label.size = Vector2(300, 50)
+	level_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 
 func show_win(molecule: String, hint: String) -> void:
 	var vp := get_viewport().get_visible_rect().size
@@ -34,6 +37,9 @@ func show_win(molecule: String, hint: String) -> void:
 func hide_win() -> void:
 	win_screen.visible = false
 	reset_button.visible = true
+
+func set_level_label(molecule: String) -> void:
+	level_label.text = "Složi: " + molecule
 
 func _on_next_pressed() -> void:
 	emit_signal("next_level_pressed")

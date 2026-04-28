@@ -38,6 +38,7 @@ func _load_level(index: int) -> void:
 		push_error("Level nije ucitan.")
 		return
 	print("Ucitan level: ", current_level.get("name", "?"))
+	ui.set_level_label(current_level.get("molecule", ""))
 	_spawn_slots()
 	_spawn_tiles()
 

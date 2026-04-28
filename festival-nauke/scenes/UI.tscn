@@ -82,3 +82,9 @@ offset_right = 89.0
 offset_bottom = -1119.0
 grow_vertical = 0
 text = "↺ Reset"
+
+[node name="LevelLabel" type="Label" parent="." unique_id=931621853]
+offset_right = 40.0
+offset_bottom = 23.0
+theme_override_font_sizes/font_size = 32
+text = "Složi: H2O"
