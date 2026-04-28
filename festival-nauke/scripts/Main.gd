@@ -3,16 +3,38 @@ extends Node2D
 const HexTileSCN = preload("res://scenes/HexTile.tscn")
 const BoardSlotSCN = preload("res://scenes/BoardSlot.tscn")
 
-const LEVEL_PATH := "res://data/levels/level_01_water.json"
+const LEVELS := [
+	"res://data/levels/level_01_water.json",
+	"res://data/levels/level_02_co2.json",
+	"res://data/levels/level_03_ammonia.json",
+	"res://data/levels/level_04_methane.json",
+]
 
+var current_level_index: int = 0
 var current_level: Dictionary = {}
 var dragged_tile: HexTile = null
 var drag_offset: Vector2 = Vector2.ZERO
 
+@onready var ui = $UI
+
 func _ready() -> void:
-	current_level = LevelLoader.load_level(LEVEL_PATH)
+	ui.next_level_pressed.connect(_on_next_level)
+	_load_level(current_level_index)
+
+func _load_level(index: int) -> void:
+	# Ocisti stare nodeove
+	for child in get_children():
+		if child is HexTile or child is BoardSlot:
+			child.queue_free()
+	ui.hide_win()
+	
+	if index >= LEVELS.size():
+		ui.show_win("Gotovo!", "Prosli ste sve nivoe. Bravo!")
+		return
+	
+	current_level = LevelLoader.load_level(LEVELS[index])
 	if current_level.is_empty():
-		push_error("Level nije ucitan, prekidam.")
+		push_error("Level nije ucitan.")
 		return
 	print("Ucitan level: ", current_level.get("name", "?"))
 	_spawn_slots()
@@ -30,7 +52,6 @@ func _spawn_tiles() -> void:
 	var center_x: float = get_viewport_rect().size.x / 2.0
 	var pool_y: float = 750.0
 	var spacing: float = 150.0
-	
 	for i in pool_data.size():
 		var tile: HexTile = HexTileSCN.instantiate()
 		add_child(tile)
@@ -38,10 +59,12 @@ func _spawn_tiles() -> void:
 		var pos := Vector2(center_x + offset, pool_y)
 		tile.global_position = pos
 		tile.home_pos = pos
-		var element: String = pool_data[i].element
-		var edges: Array = pool_data[i].edges
-		tile.setup(element, edges)
+		tile.setup(pool_data[i].element, pool_data[i].edges)
 		tile.tile_clicked.connect(_on_tile_clicked)
+
+func _on_next_level() -> void:
+	current_level_index += 1
+	_load_level(current_level_index)
 
 func _on_tile_clicked(tile: HexTile) -> void:
 	for slot in get_tree().get_nodes_in_group("slots"):
@@ -94,9 +117,11 @@ func _check_win() -> void:
 		if slot.is_free():
 			return
 	if _validate_edges(slots):
-		print("WIN! Molekul je ispravan!")
+		var molecule: String = current_level.get("molecule", "")
+		var hint: String = current_level.get("hint", "")
+		ui.show_win(molecule, hint)
 	else:
-		print("Svi slotovi popunjeni ali veze se ne poklapaju!")
+		print("Veze se ne poklapaju!")
 
 func _validate_edges(slots: Array) -> bool:
 	const NEIGHBOR_DIST: float = 150.0
