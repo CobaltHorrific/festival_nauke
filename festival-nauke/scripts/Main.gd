@@ -14,6 +14,7 @@ var current_level_index: int = 0
 var current_level: Dictionary = {}
 var dragged_tile: HexTile = null
 var drag_offset: Vector2 = Vector2.ZERO
+var game_finished: bool = false
 
 @onready var ui = $UI
 
@@ -31,6 +32,8 @@ func _show_title() -> void:
 			child.queue_free()
 
 func _on_game_start() -> void:
+	game_finished = false
+	current_level_index = 0
 	$TitleScreen.visible = false
 	ui.visible = true
 	_load_level(0)
@@ -43,7 +46,7 @@ func _load_level(index: int) -> void:
 	ui.hide_win()
 	
 	if index >= LEVELS.size():
-		ui.show_win("Gotovo!", "Prosli ste sve nivoe. Bravo!")
+		ui.show_win("Gotovo!", "Pritisnite dugme da se vratite na pocetak.")
 		return
 	
 	current_level = LevelLoader.load_level(LEVELS[index])
@@ -78,8 +81,23 @@ func _spawn_tiles() -> void:
 		tile.tile_clicked.connect(_on_tile_clicked)
 
 func _on_next_level() -> void:
-	current_level_index += 1
-	_load_level(current_level_index)
+	if game_finished:
+		# Drugi klik — vrati na naslovni
+		game_finished = false
+		ui.visible = false
+		ui.hide_win()
+		current_level_index = 0
+		for child in get_children():
+			if child is HexTile or child is BoardSlot:
+				child.queue_free()
+		$TitleScreen.visible = true
+	elif current_level_index >= LEVELS.size() - 1:
+		# Poslednji level pobedjen — pokazi Gotovo
+		game_finished = true
+		ui.show_win("Gotovo!", "Prosli ste sve nivoe. Pritisnite za pocetak.")
+	else:
+		current_level_index += 1
+		_load_level(current_level_index)
 
 func _on_tile_clicked(tile: HexTile) -> void:
 	for slot in get_tree().get_nodes_in_group("slots"):
