@@ -87,6 +87,9 @@ func _process(_delta: float) -> void:
 		slot.highlight(slot == nearest)
 
 func _input(event: InputEvent) -> void:
+	if event is InputEventKey and event.pressed and event.keycode == KEY_R:
+		_on_reset()
+		return
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and not event.pressed:
 		if dragged_tile == null:
 			return
