@@ -6,6 +6,7 @@ extends CanvasLayer
 @onready var next_button = $WinScreen/NextButton
 @onready var reset_button = $ResetButton
 @onready var level_label = $LevelLabel
+@onready var counter_label = $CounterLabel
 
 signal next_level_pressed
 signal reset_pressed
@@ -21,6 +22,10 @@ func _ready() -> void:
 	level_label.position = Vector2(vp.x / 2.0 - 150, 30)
 	level_label.size = Vector2(300, 50)
 	level_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	counter_label.position = Vector2(vp.x - 150, 30)
+	counter_label.size = Vector2(130, 50)
+	counter_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+	counter_label.add_theme_font_size_override("font_size", 28)
 
 func show_win(molecule: String, hint: String) -> void:
 	var vp := get_viewport().get_visible_rect().size
@@ -46,3 +51,6 @@ func _on_next_pressed() -> void:
 
 func _on_reset_pressed() -> void:
 	emit_signal("reset_pressed")
+
+func set_counter(current: int, total: int) -> void:
+	counter_label.text = str(current) + "/" + str(total)

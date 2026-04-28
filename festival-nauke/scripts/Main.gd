@@ -55,6 +55,7 @@ func _load_level(index: int) -> void:
 		return
 	print("Ucitan level: ", current_level.get("name", "?"))
 	ui.set_level_label(current_level.get("molecule", ""))
+	ui.set_counter(index + 1, LEVELS.size())
 	_spawn_slots()
 	_spawn_tiles()
 
