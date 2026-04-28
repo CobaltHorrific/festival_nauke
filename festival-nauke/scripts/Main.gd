@@ -19,6 +19,7 @@ var drag_offset: Vector2 = Vector2.ZERO
 
 func _ready() -> void:
 	ui.next_level_pressed.connect(_on_next_level)
+	ui.reset_pressed.connect(_on_reset)
 	_load_level(current_level_index)
 
 func _load_level(index: int) -> void:
@@ -154,3 +155,6 @@ func _get_edge_index(from: Vector2, to: Vector2) -> int:
 			best_dot = dot
 			best_idx = i
 	return best_idx
+
+func _on_reset() -> void:
+	_load_level(current_level_index)
