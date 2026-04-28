@@ -20,7 +20,20 @@ var drag_offset: Vector2 = Vector2.ZERO
 func _ready() -> void:
 	ui.next_level_pressed.connect(_on_next_level)
 	ui.reset_pressed.connect(_on_reset)
-	_load_level(current_level_index)
+	$TitleScreen.start_pressed.connect(_on_game_start)
+	_show_title()
+
+func _show_title() -> void:
+	$TitleScreen.visible = true
+	ui.visible = false
+	for child in get_children():
+		if child is HexTile or child is BoardSlot:
+			child.queue_free()
+
+func _on_game_start() -> void:
+	$TitleScreen.visible = false
+	ui.visible = true
+	_load_level(0)
 
 func _load_level(index: int) -> void:
 	# Ocisti stare nodeove

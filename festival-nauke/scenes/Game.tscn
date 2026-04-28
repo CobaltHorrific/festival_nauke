@@ -1,0 +1,10 @@
+[gd_scene format=3 uid="uid://dufonbxpr7d6k"]
+
+[ext_resource type="PackedScene" uid="uid://y3txj6st6fpo" path="res://scenes/TitleScreen.tscn" id="1_qbsmt"]
+[ext_resource type="PackedScene" uid="uid://byqymgqhinkpv" path="res://scenes/Main.tscn" id="2_cpr0p"]
+
+[node name="Game" type="Node" unique_id=1086354598]
+
+[node name="TitleScreen" parent="." unique_id=2042531822 instance=ExtResource("1_qbsmt")]
+
+[node name="Main" parent="." unique_id=1634408659 instance=ExtResource("2_cpr0p")]
