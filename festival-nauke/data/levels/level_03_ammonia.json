@@ -1,0 +1,17 @@
+{
+    "name": "Amonijak",
+    "molecule": "NH3",
+    "hint": "Miris koji osecas u sredstvima za ciscenje",
+    "slots": [
+        { "x": 960, "y": 400 },
+        { "x": 856, "y": 490 },
+        { "x": 1064, "y": 490 },
+        { "x": 960, "y": 260 }
+    ],
+    "pool": [
+        { "element": "N", "edges": [1, 0, 1, 0, 1, 0] },
+        { "element": "H", "edges": [0, 0, 0, 0, 0, 1] },
+        { "element": "H", "edges": [0, 0, 0, 1, 0, 0] },
+        { "element": "H", "edges": [0, 1, 0, 0, 0, 0] }
+    ]
+}

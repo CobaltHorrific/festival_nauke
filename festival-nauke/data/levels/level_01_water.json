@@ -1,0 +1,15 @@
+{
+    "name": "Voda",
+    "molecule": "H2O",
+    "hint": "Najvazniji molekul za zivot na Zemlji",
+    "slots": [
+        { "x": 960, "y": 350 },
+        { "x": 856, "y": 440 },
+        { "x": 1064, "y": 440 }
+    ],
+    "pool": [
+        { "element": "O", "edges": [1, 0, 1, 0, 0, 0] },
+        { "element": "H", "edges": [0, 0, 0, 0, 0, 1] },
+        { "element": "H", "edges": [0, 0, 0, 1, 0, 0] }
+    ]
+}

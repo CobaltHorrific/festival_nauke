@@ -1,0 +1,15 @@
+{
+    "name": "Ugljen-dioksid",
+    "molecule": "CO2",
+    "hint": "Gas koji izdisemo i koji biljke koriste za fotosintezu",
+    "slots": [
+        { "x": 840, "y": 440 },
+        { "x": 960, "y": 440 },
+        { "x": 1080, "y": 440 }
+    ],
+    "pool": [
+        { "element": "O", "edges": [0, 0, 0, 0, 0, 2] },
+        { "element": "C", "edges": [2, 0, 2, 0, 0, 0] },
+        { "element": "O", "edges": [0, 0, 0, 2, 0, 0] }
+    ]
+}

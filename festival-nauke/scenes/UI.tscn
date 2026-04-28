@@ -1,0 +1,32 @@
+[gd_scene format=3 uid="uid://eemmybxpu1ip"]
+
+[node name="Ui" type="CanvasLayer" unique_id=1386058611]
+
+[node name="WinScreen" type="Control" parent="." unique_id=1525750971]
+visible = false
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ColorRect" type="ColorRect" parent="WinScreen" unique_id=97743563]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="MoleculeLabel" type="Label" parent="WinScreen" unique_id=607630320]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 23.0
+
+[node name="HintLabel" type="Label" parent="WinScreen" unique_id=2058541804]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 23.0
+
+[node name="NextButton" type="Button" parent="WinScreen" unique_id=1769623759]
+layout_mode = 0
+offset_right = 8.0
+offset_bottom = 8.0

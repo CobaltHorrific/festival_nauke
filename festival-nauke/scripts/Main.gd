@@ -3,43 +3,44 @@ extends Node2D
 const HexTileSCN = preload("res://scenes/HexTile.tscn")
 const BoardSlotSCN = preload("res://scenes/BoardSlot.tscn")
 
+const LEVEL_PATH := "res://data/levels/level_01_water.json"
+
+var current_level: Dictionary = {}
 var dragged_tile: HexTile = null
 var drag_offset: Vector2 = Vector2.ZERO
 
-const SLOT_POSITIONS := [
-	Vector2(960, 350),
-	Vector2(856, 440),
-	Vector2(1064, 440),
-]
-
-const TEST_POOL := [
-	["O", [1, 0, 1, 0, 0, 0]],
-	["H", [0, 0, 0, 0, 0, 1]],
-	["H", [0, 0, 0, 1, 0, 0]],
-]
-
 func _ready() -> void:
+	current_level = LevelLoader.load_level(LEVEL_PATH)
+	if current_level.is_empty():
+		push_error("Level nije ucitan, prekidam.")
+		return
+	print("Ucitan level: ", current_level.get("name", "?"))
 	_spawn_slots()
 	_spawn_tiles()
 
 func _spawn_slots() -> void:
-	for pos in SLOT_POSITIONS:
+	var slots_data: Array = current_level.get("slots", [])
+	for slot_data in slots_data:
 		var slot: BoardSlot = BoardSlotSCN.instantiate()
 		add_child(slot)
-		slot.global_position = pos
+		slot.global_position = Vector2(slot_data.x, slot_data.y)
 
 func _spawn_tiles() -> void:
+	var pool_data: Array = current_level.get("pool", [])
 	var center_x: float = get_viewport_rect().size.x / 2.0
 	var pool_y: float = 750.0
 	var spacing: float = 150.0
-	for i in TEST_POOL.size():
+	
+	for i in pool_data.size():
 		var tile: HexTile = HexTileSCN.instantiate()
 		add_child(tile)
-		var offset := (i - (TEST_POOL.size() - 1) / 2.0) * spacing
+		var offset := (i - (pool_data.size() - 1) / 2.0) * spacing
 		var pos := Vector2(center_x + offset, pool_y)
 		tile.global_position = pos
 		tile.home_pos = pos
-		tile.setup(TEST_POOL[i][0], TEST_POOL[i][1])
+		var element: String = pool_data[i].element
+		var edges: Array = pool_data[i].edges
+		tile.setup(element, edges)
 		tile.tile_clicked.connect(_on_tile_clicked)
 
 func _on_tile_clicked(tile: HexTile) -> void:
@@ -112,18 +113,12 @@ func _validate_edges(slots: Array) -> bool:
 				continue
 			var edge_idx := _get_edge_index(slot_a.global_position, slot_b.global_position)
 			var opposite_idx := (edge_idx + 3) % 6
-			print("Slot %d→%d | edge_a=%d edge_b=%d | val_a=%d val_b=%d" % [
-				i, j, edge_idx, opposite_idx,
-				tile_a.edges[edge_idx], tile_b.edges[opposite_idx]
-			])
 			if tile_a.edges[edge_idx] != tile_b.edges[opposite_idx]:
 				return false
 	return true
 
 func _get_edge_index(from: Vector2, to: Vector2) -> int:
-	# Dot product metoda - pouzdanija od ugaone matematike
 	var dir := (to - from).normalized()
-	# 6 smerova edge midpointa za flat-top hex: 30, 90, 150, 210, 270, 330
 	var best_idx := 0
 	var best_dot := -2.0
 	for i in 6:
