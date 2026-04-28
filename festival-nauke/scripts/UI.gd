@@ -12,6 +12,13 @@ func _ready() -> void:
 	next_button.pressed.connect(_on_next_pressed)
 
 func show_win(molecule: String, hint: String) -> void:
+	# Postavi velicinu na ceo ekran direktno kroz kod
+	var vp := get_viewport().get_visible_rect().size
+	win_screen.position = Vector2.ZERO
+	win_screen.size = vp
+	molecule_label.position = Vector2(vp.x / 2.0 - 100, vp.y / 2.0 - 80)
+	hint_label.position = Vector2(vp.x / 2.0 - 300, vp.y / 2.0 - 10)
+	next_button.position = Vector2(vp.x / 2.0 - 100, vp.y / 2.0 + 80)
 	molecule_label.text = molecule
 	hint_label.text = hint
 	win_screen.visible = true
