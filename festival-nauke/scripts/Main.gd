@@ -73,6 +73,7 @@ func _spawn_slots() -> void:
 
 func _spawn_tiles() -> void:
 	var pool_data: Array = current_level.get("pool", [])
+	pool_data.shuffle()
 	var center_x: float = get_viewport_rect().size.x / 2.0
 	var pool_y: float = 850.0
 	var spacing: float = 140.0
