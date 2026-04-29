@@ -69,8 +69,9 @@ func _spawn_slots() -> void:
 func _spawn_tiles() -> void:
 	var pool_data: Array = current_level.get("pool", [])
 	var center_x: float = get_viewport_rect().size.x / 2.0
-	var pool_y: float = 750.0
-	var spacing: float = 150.0
+	var pool_y: float = 850.0
+	var spacing: float = 140.0
+	
 	for i in pool_data.size():
 		var tile: HexTile = HexTileSCN.instantiate()
 		add_child(tile)
