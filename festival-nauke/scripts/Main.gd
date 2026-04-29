@@ -17,8 +17,13 @@ var drag_offset: Vector2 = Vector2.ZERO
 var game_finished: bool = false
 
 @onready var ui = $UI
+@onready var background = $Background
 
 func _ready() -> void:
+	var vp := get_viewport().get_visible_rect().size
+	background.position = Vector2.ZERO
+	background.size = vp
+	background.modulate = Color(1, 1, 1, 0.6)  # ← DODAJ OVO (0.4 = 40% providnosti)
 	ui.next_level_pressed.connect(_on_next_level)
 	ui.reset_pressed.connect(_on_reset)
 	$TitleScreen.start_pressed.connect(_on_game_start)

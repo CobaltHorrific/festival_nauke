@@ -21,7 +21,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-color = Color(0.039215688, 0.09803922, 0.16078432, 0.6)
+color = Color(0, 0, 0, 0.6)
 
 [node name="MoleculeLabel" type="Label" parent="WinScreen" unique_id=607630320]
 layout_mode = 1

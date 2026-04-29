@@ -1,8 +1,11 @@
 [gd_scene format=3 uid="uid://crx6eus0evjyd"]
 
 [ext_resource type="Script" uid="uid://ccc14trjc02oe" path="res://scripts/BoardSlot.gd" id="1_yo1gl"]
+[ext_resource type="Texture2D" uid="uid://n37c4uw3dvax" path="res://assets/Sprites/slot_empty.png" id="2_7s4xt"]
 
 [node name="BoardSlot" type="Node2D" unique_id=1965171649]
 script = ExtResource("1_yo1gl")
 
-[node name="Polygon2D" type="Polygon2D" parent="." unique_id=1607199833]
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=2100280607]
+scale = Vector2(0.85, 0.85)
+texture = ExtResource("2_7s4xt")

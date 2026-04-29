@@ -10,14 +10,20 @@ var home_pos: Vector2 = Vector2.ZERO
 
 signal tile_clicked(tile)
 
-@onready var polygon: Polygon2D = $Polygon2D
-@onready var label: Label = $Label
+@onready var sprite: Sprite2D = $Sprite2D
 @onready var collision: CollisionPolygon2D = $CollisionPolygon2D
 
+var _textures := {
+	"H": preload("res://assets/sprites/tile_H.png"),
+	"O": preload("res://assets/sprites/tile_O.png"),
+	"C": preload("res://assets/sprites/tile_C.png"),
+	"N": preload("res://assets/sprites/tile_N.png"),
+	"S": preload("res://assets/sprites/tile_S.png"),
+}
+
 func _ready() -> void:
-	_build_hex_shape()
-	_refresh_visuals()
-	_refresh_bonds()
+	$Sprite2D.scale = Vector2(0.85, 0.85)
+	_build_collision()
 	add_to_group("tiles")
 
 func setup(p_element: String, p_edges: Array, p_fixed: bool = false) -> void:
@@ -25,8 +31,12 @@ func setup(p_element: String, p_edges: Array, p_fixed: bool = false) -> void:
 	edges = p_edges
 	is_fixed = p_fixed
 	if is_inside_tree():
-		_refresh_visuals()
+		_refresh_sprite()
 		_refresh_bonds()
+
+func _refresh_sprite() -> void:
+	if sprite and _textures.has(element):
+		sprite.texture = _textures[element]
 
 func _input(event: InputEvent) -> void:
 	if is_fixed:
@@ -38,33 +48,18 @@ func _input(event: InputEvent) -> void:
 			emit_signal("tile_clicked", self)
 			get_viewport().set_input_as_handled()
 
-func _build_hex_shape() -> void:
+func _build_collision() -> void:
 	var pts := PackedVector2Array()
 	for i in 6:
 		var angle := deg_to_rad(60.0 * i)
 		pts.append(Vector2(cos(angle), sin(angle)) * RADIUS)
-	polygon.polygon = pts
 	collision.polygon = pts
 
-func _refresh_visuals() -> void:
-	if label:
-		label.text = element
-	if polygon:
-		match element:
-			"C": polygon.color = Color("2d2d2d")
-			"H": polygon.color = Color("c8c8c8")
-			"O": polygon.color = Color("c0392b")
-			"N": polygon.color = Color("2471a3")
-			"S": polygon.color = Color("f1c40f")
-			_:   polygon.color = Color("1e3a5f")
-
 func _refresh_bonds() -> void:
-	# Obrisi stare linije
 	for child in get_children():
 		if child.name.begins_with("Bond_"):
 			child.queue_free()
 	
-	# Napravi nove
 	for i in 6:
 		var bond_count: int = edges[i]
 		if bond_count == 0:

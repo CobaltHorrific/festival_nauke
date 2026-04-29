@@ -1,22 +1,24 @@
 [gd_scene format=3 uid="uid://y3txj6st6fpo"]
 
 [ext_resource type="Script" uid="uid://bmqbn4eyyoxun" path="res://scripts/TitleScreen.gd" id="1_qyuap"]
+[ext_resource type="Texture2D" uid="uid://bme0kdlvcl0ai" path="res://assets/Sprites/btn_start.png" id="2_dfj8j"]
+[ext_resource type="Texture2D" uid="uid://dmht3n473g4pg" path="res://assets/Sprites/logo.png" id="3_8k5og"]
 
 [node name="TitleScreen" type="CanvasLayer" unique_id=2042531822]
 script = ExtResource("1_qyuap")
 
-[node name="Background" type="ColorRect" parent="." unique_id=2054211286]
+[node name="Background" type="TextureRect" parent="." unique_id=777870706]
 offset_right = 40.0
 offset_bottom = 40.0
-
-[node name="TitleLabel" type="Label" parent="." unique_id=1285957279]
-offset_right = 40.0
-offset_bottom = 23.0
-
-[node name="SubtitleLabel" type="Label" parent="." unique_id=1868228172]
-offset_right = 40.0
-offset_bottom = 23.0
 
 [node name="StartButton" type="Button" parent="." unique_id=636152878]
 offset_right = 8.0
 offset_bottom = 8.0
+icon = ExtResource("2_dfj8j")
+expand_icon = true
+
+[node name="Logo" type="TextureRect" parent="." unique_id=1312321766]
+offset_right = 40.0
+offset_bottom = 40.0
+texture = ExtResource("3_8k5og")
+expand_mode = 2
