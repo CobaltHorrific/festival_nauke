@@ -1,10 +1,10 @@
 [gd_scene format=3 uid="uid://byqymgqhinkpv"]
 
 [ext_resource type="Script" uid="uid://bf0sdjym7y7fs" path="res://scripts/Main.gd" id="1_elqb8"]
-[ext_resource type="Texture2D" uid="uid://bg2f7epctwgo5" path="res://assets/sprites/background_blue.png" id="2_rarhs"]
+[ext_resource type="Texture2D" uid="uid://bg2f7epctwgo5" path="res://Assets/Sprites/background_blue.png" id="2_rarhs"]
 [ext_resource type="PackedScene" uid="uid://eemmybxpu1ip" path="res://scenes/UI.tscn" id="2_rvslj"]
 [ext_resource type="PackedScene" uid="uid://y3txj6st6fpo" path="res://scenes/TitleScreen.tscn" id="3_0bbpv"]
-[ext_resource type="AudioStream" uid="uid://besb0iaor2w3w" path="res://assets/sounds/music/music_loop.ogg" id="5_vcsgt"]
+[ext_resource type="AudioStream" uid="uid://besb0iaor2w3w" path="res://Assets/Sounds/music/music_loop.ogg" id="5_vcsgt"]
 
 [node name="Main" type="Node2D" unique_id=1634408659]
 script = ExtResource("1_elqb8")

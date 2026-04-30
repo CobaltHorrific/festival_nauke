@@ -3,12 +3,12 @@
 importer="wav"
 type="AudioStreamWAV"
 uid="uid://lvvmsfy4ijkj"
-path="res://.godot/imported/snap.wav-9d62ccaaceb45eaab492a920eefbff98.sample"
+path="res://.godot/imported/snap.wav-b0fdfcdf8ab17c981c66efeb5ff8bc0f.sample"
 
 [deps]
 
-source_file="res://assets/sounds/sfx/snap.wav"
-dest_files=["res://.godot/imported/snap.wav-9d62ccaaceb45eaab492a920eefbff98.sample"]
+source_file="res://Assets/Sounds/sfx/snap.wav"
+dest_files=["res://.godot/imported/snap.wav-b0fdfcdf8ab17c981c66efeb5ff8bc0f.sample"]
 
 [params]
 
