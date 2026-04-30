@@ -2,12 +2,15 @@ extends Node2D
 
 const HexTileSCN = preload("res://scenes/HexTile.tscn")
 const BoardSlotSCN = preload("res://scenes/BoardSlot.tscn")
-
 const LEVELS := [
 	"res://data/levels/level_01_water.json",
 	"res://data/levels/level_02_co2.json",
 	"res://data/levels/level_03_ammonia.json",
 	"res://data/levels/level_04_methane.json",
+	"res://data/levels/level_05_metanal.json",
+	"res://data/levels/level_06_metanol.json",
+	"res://data/levels/level_07_metilamina.json",
+	"res://data/levels/level_08_etanol.json",
 ]
 
 const SFX_PICKUP = preload("res://assets/sounds/sfx/pickup.wav")
@@ -22,6 +25,10 @@ const LEVEL_BACKGROUNDS := [
 	preload("res://assets/sprites/background_yellow.png"),
 	preload("res://assets/sprites/background_purple.png"),
 	preload("res://assets/sprites/background_red.png"),
+	preload("res://assets/sprites/background_blue.png"),
+	preload("res://assets/sprites/background_yellow.png"),
+	preload("res://assets/sprites/background_purple.png"),
+	preload("res://assets/sprites/background_red.png"),
 ]
 
 var current_level_index: int = 0
@@ -29,6 +36,7 @@ var current_level: Dictionary = {}
 var dragged_tile: HexTile = null
 var drag_offset: Vector2 = Vector2.ZERO
 var game_finished: bool = false
+var drag_source_slot: BoardSlot = null
 
 @onready var ui = $UI
 @onready var background = $Background
@@ -141,25 +149,28 @@ func _on_next_level() -> void:
 	else:
 		current_level_index += 1
 		_load_level(current_level_index)
-
 func _on_tile_clicked(tile: HexTile) -> void:
 	_play_sfx(SFX_PICKUP)
+	drag_source_slot = null
 	for slot in get_tree().get_nodes_in_group("slots"):
 		if slot.occupied_by == tile:
+			drag_source_slot = slot  # ← zapamti odakle dolazi
 			slot.occupied_by = null
 			slot.highlight(false)
 	dragged_tile = tile
 	drag_offset = get_global_mouse_position() - tile.global_position
 	move_child(tile, get_child_count() - 1)
-
+	
+		
 func _process(_delta: float) -> void:
 	if dragged_tile == null:
 		return
 	dragged_tile.global_position = get_global_mouse_position() - drag_offset
-	var nearest := _find_nearest_free_slot(get_global_mouse_position())
+	var nearest := _find_nearest_slot_any(get_global_mouse_position())
 	for slot in get_tree().get_nodes_in_group("slots"):
 		slot.highlight(slot == nearest)
-
+		
+		
 func _input(event: InputEvent) -> void:
 	if event is InputEventKey and event.pressed and event.keycode == KEY_R:
 		_on_reset()
@@ -167,17 +178,56 @@ func _input(event: InputEvent) -> void:
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and not event.pressed:
 		if dragged_tile == null:
 			return
-		var nearest := _find_nearest_free_slot(get_global_mouse_position())
-		if nearest != null:
-			dragged_tile.global_position = nearest.global_position
-			nearest.occupied_by = dragged_tile
-			nearest.highlight(false)
+		var mouse_pos := get_global_mouse_position()
+		var nearest_slot := _find_nearest_slot_any(mouse_pos)
+		
+		if nearest_slot == null:
+			# Nije blizu nijednog slota — vrati u home_pos
+			dragged_tile.global_position = dragged_tile.home_pos
+		elif nearest_slot.is_free():
+			# Slobodan slot — samo postavi
+			dragged_tile.global_position = nearest_slot.global_position
+			nearest_slot.occupied_by = dragged_tile
+			nearest_slot.highlight(false)
 			_play_sfx(SFX_SNAP)
 		else:
-			dragged_tile.global_position = dragged_tile.home_pos
+			# Slot zauzet — swap
+			var other_tile: HexTile = nearest_slot.occupied_by
+			# Pronadji da li dragged_tile dolazi sa nekog slota
+			var source_slot: BoardSlot = null
+			for slot in get_tree().get_nodes_in_group("slots"):
+				if slot.occupied_by == dragged_tile:
+					source_slot = slot
+					break
+			
+			if drag_source_slot != null:
+				# Swap izmedju dva slota
+				drag_source_slot.occupied_by = other_tile
+				other_tile.global_position = drag_source_slot.global_position
+			else:
+				# Dolazi iz pool-a
+				other_tile.global_position = other_tile.home_pos
+			nearest_slot.occupied_by = dragged_tile
+			dragged_tile.global_position = nearest_slot.global_position
+			nearest_slot.highlight(false)
+			_play_sfx(SFX_SNAP)
+		
+		# Reset highlight-a svih slotova
+		for slot in get_tree().get_nodes_in_group("slots"):
+			slot.highlight(false)
+		
 		dragged_tile = null
 		_check_win()
-
+func _find_nearest_slot_any(pos: Vector2) -> BoardSlot:
+	var nearest: BoardSlot = null
+	var nearest_dist: float = BoardSlot.SNAP_DISTANCE
+	for slot in get_tree().get_nodes_in_group("slots"):
+		var dist := pos.distance_to(slot.global_position)
+		if dist < nearest_dist:
+			nearest_dist = dist
+			nearest = slot
+	return nearest
+	
 func _find_nearest_free_slot(pos: Vector2) -> BoardSlot:
 	var nearest: BoardSlot = null
 	var nearest_dist: float = BoardSlot.SNAP_DISTANCE
@@ -203,20 +253,37 @@ func _check_win() -> void:
 
 func _validate_edges(slots: Array) -> bool:
 	const NEIGHBOR_DIST: float = 150.0
+	
+	# Uslov 1: susedni slotovi moraju imati poklapajuce edge vrednosti
 	for i in slots.size():
 		var slot_a: BoardSlot = slots[i]
 		var tile_a: HexTile = slot_a.occupied_by
 		for j in slots.size():
-			if i == j:
-				continue
+			if i == j: continue
 			var slot_b: BoardSlot = slots[j]
 			var tile_b: HexTile = slot_b.occupied_by
-			if slot_a.global_position.distance_to(slot_b.global_position) > NEIGHBOR_DIST:
-				continue
+			if slot_a.global_position.distance_to(slot_b.global_position) > NEIGHBOR_DIST: continue
 			var edge_idx := _get_edge_index(slot_a.global_position, slot_b.global_position)
-			var opposite_idx := (edge_idx + 3) % 6
-			if tile_a.edges[edge_idx] != tile_b.edges[opposite_idx]:
-				return false
+			var val_a: int = tile_a.edges[edge_idx]
+			var val_b: int = tile_b.edges[(edge_idx + 3) % 6]
+			if val_a != val_b: return false
+	
+	# Uslov 2: svaki non-zero edge mora imati suseda u tom pravcu
+	for i in slots.size():
+		var slot_a: BoardSlot = slots[i]
+		var tile_a: HexTile = slot_a.occupied_by
+		for edge_i in 6:
+			if tile_a.edges[edge_i] == 0: continue
+			var has_neighbor: bool = false
+			for j in slots.size():
+				if i == j: continue
+				var slot_b: BoardSlot = slots[j]
+				if slot_a.global_position.distance_to(slot_b.global_position) > NEIGHBOR_DIST: continue
+				if _get_edge_index(slot_a.global_position, slot_b.global_position) == edge_i:
+					has_neighbor = true
+					break
+			if not has_neighbor: return false
+	
 	return true
 
 func _get_edge_index(from: Vector2, to: Vector2) -> int:

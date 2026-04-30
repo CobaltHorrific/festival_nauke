@@ -1,0 +1,30 @@
+{
+	"name": "Etanol",
+	"molecule": "C2H5OH",
+	"hint": "Pice, gorivo, dezinfektans",
+	"slots": [
+		{ "x": 760, "y": 440 },
+		{ "x": 670, "y": 388 },
+		{ "x": 670, "y": 492 },
+		{ "x": 760, "y": 336 },
+		{ "x": 850, "y": 388 },
+		{ "x": 940, "y": 440 },
+		{ "x": 850, "y": 492 },
+		{ "x": 940, "y": 336 },
+		{ "x": 1030, "y": 388 }
+	],
+	"pool": [
+		{ "element": "C", "edges": [0, 0, 1, 1, 1, 1] },
+		{ "element": "H", "edges": [1, 0, 0, 0, 0, 0] },
+		{ "element": "H", "edges": [0, 0, 0, 0, 0, 1] },
+		{ "element": "H", "edges": [0, 1, 0, 0, 0, 0] },
+		{ "element": "C", "edges": [1, 1, 1, 0, 0, 1] },
+		{ "element": "H", "edges": [0, 0, 0, 1, 0, 0] },
+		{ "element": "H", "edges": [0, 0, 0, 0, 1, 0] },
+		{ "element": "O", "edges": [1, 0, 1, 0, 0, 0] },
+		{ "element": "H", "edges": [0, 0, 0, 1, 0, 0] },
+		{ "element": "H", "edges": [0, 0, 0, 0, 1, 0] },
+		{ "element": "C", "edges": [1, 0, 1, 0, 1, 0] },
+		{ "element": "O", "edges": [0, 1, 0, 0, 0, 0] }
+	]
+}
