@@ -45,7 +45,7 @@ func _ready() -> void:
 	counter_label.size = Vector2(130, 50)
 	counter_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 
-func show_win(molecule: String, hint: String) -> void:
+func show_win(molecule: String, hint: String, is_final: bool = false) -> void:
 	var vp := get_viewport().get_visible_rect().size
 	win_screen.position = Vector2.ZERO
 	win_screen.size = vp

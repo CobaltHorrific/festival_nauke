@@ -1,22 +1,22 @@
 {
-	"name": "Metan",
-	"molecule": "CH4",
-	"hint": "Prirodni gas koji koristimo za grejanje i kuvanje",
-	"slots": [
-		{ "x": 960, "y": 440 },
-		{ "x": 1050, "y": 492 },
-		{ "x": 870, "y": 492 },
-		{ "x": 870, "y": 388 },
-		{ "x": 1050, "y": 388 }
-	],
-	"pool": [
-		{ "element": "C", "edges": [1, 0, 1, 1, 0, 1] },
-		{ "element": "H", "edges": [0, 0, 0, 1, 0, 0] },
-		{ "element": "H", "edges": [0, 0, 0, 0, 0, 1] },
-		{ "element": "H", "edges": [1, 0, 0, 0, 0, 0] },
-		{ "element": "H", "edges": [0, 0, 1, 0, 0, 0] },
-		{ "element": "C", "edges": [0, 1, 0, 0, 1, 0] },
-		{ "element": "H", "edges": [0, 1, 0, 0, 0, 0] },
-		{ "element": "H", "edges": [0, 0, 0, 0, 1, 0] }
-	]
+    "name": "Metan",
+    "molecule": "CH4",
+    "hint": "Prirodni gas koji koristimo za grejanje i kuvanje",
+    "slots": [
+        { "x": 960, "y": 440 },
+        { "x": 1050, "y": 492 },
+        { "x": 870, "y": 492 },
+        { "x": 870, "y": 388 },
+        { "x": 1050, "y": 388 }
+    ],
+    "pool": [
+        { "element": "C", "edges": [1, 0, 1, 1, 0, 1] },
+        { "element": "H", "edges": [0, 0, 0, 1, 0, 0] },
+        { "element": "H", "edges": [0, 0, 0, 0, 0, 1] },
+        { "element": "H", "edges": [1, 0, 0, 0, 0, 0] },
+        { "element": "H", "edges": [0, 0, 1, 0, 0, 0] },
+        { "element": "C", "edges": [1, 0, 1, 0, 1, 0] },
+        { "element": "H", "edges": [0, 1, 0, 0, 0, 0] },
+        { "element": "H", "edges": [0, 0, 0, 0, 1, 0] }
+    ]
 }

@@ -10,6 +10,20 @@ const LEVELS := [
 	"res://data/levels/level_04_methane.json",
 ]
 
+const SFX_PICKUP = preload("res://assets/sounds/sfx/pickup.wav")
+const SFX_SNAP = preload("res://assets/sounds/sfx/snap.wav")
+const SFX_ERROR = preload("res://assets/sounds/sfx/error.wav")
+const SFX_WIN = preload("res://assets/sounds/sfx/win.wav")
+const SFX_CLICK = preload("res://assets/sounds/sfx/klik.wav")
+const MUSIC = preload("res://assets/sounds/music/music_loop.ogg")
+
+const LEVEL_BACKGROUNDS := [
+	preload("res://assets/sprites/background_blue.png"),
+	preload("res://assets/sprites/background_yellow.png"),
+	preload("res://assets/sprites/background_purple.png"),
+	preload("res://assets/sprites/background_red.png"),
+]
+
 var current_level_index: int = 0
 var current_level: Dictionary = {}
 var dragged_tile: HexTile = null
@@ -18,16 +32,37 @@ var game_finished: bool = false
 
 @onready var ui = $UI
 @onready var background = $Background
+@onready var music_player = $MusicPlayer
+@onready var sfx_player = $SFXPlayer
+@onready var ui_player = $UIPlayer
 
 func _ready() -> void:
-	var vp := get_viewport().get_visible_rect().size
-	background.position = Vector2.ZERO
-	background.size = vp
-	background.modulate = Color(1, 1, 1, 0.6)  # ← DODAJ OVO (0.4 = 40% providnosti)
+	background.modulate = Color(1, 1, 1, 0.6)
+	
 	ui.next_level_pressed.connect(_on_next_level)
 	ui.reset_pressed.connect(_on_reset)
 	$TitleScreen.start_pressed.connect(_on_game_start)
+	
+	music_player.stream = MUSIC
+	music_player.volume_db = -13.0
+	music_player.autoplay = false
+	sfx_player.volume_db = -3.0
+	ui_player.volume_db = -3.0
+	
 	_show_title()
+	_play_music()
+
+func _play_music() -> void:
+	if not music_player.playing:
+		music_player.play()
+
+func _play_sfx(stream: AudioStream) -> void:
+	sfx_player.stream = stream
+	sfx_player.play()
+
+func _play_ui(stream: AudioStream) -> void:
+	ui_player.stream = stream
+	ui_player.play()
 
 func _show_title() -> void:
 	$TitleScreen.visible = true
@@ -37,6 +72,7 @@ func _show_title() -> void:
 			child.queue_free()
 
 func _on_game_start() -> void:
+	_play_ui(SFX_CLICK)
 	game_finished = false
 	current_level_index = 0
 	$TitleScreen.visible = false
@@ -44,29 +80,30 @@ func _on_game_start() -> void:
 	_load_level(0)
 
 func _load_level(index: int) -> void:
-	# Ocisti stare nodeove
 	for child in get_children():
 		if child is HexTile or child is BoardSlot:
 			child.queue_free()
 	ui.hide_win()
 	
+	if index < LEVEL_BACKGROUNDS.size():
+		background.texture = LEVEL_BACKGROUNDS[index]
+		
 	if index >= LEVELS.size():
-		ui.show_win("Gotovo!", "Pritisnite dugme da se vratite na pocetak.")
+		ui.show_win("Gotovo!", "Pritisnite dugme da se vratite na pocetak.", true)
 		return
 	
 	current_level = LevelLoader.load_level(LEVELS[index])
 	if current_level.is_empty():
 		push_error("Level nije ucitan.")
 		return
-	print("Ucitan level: ", current_level.get("name", "?"))
+	
 	ui.set_level_label(current_level.get("molecule", ""))
 	ui.set_counter(index + 1, LEVELS.size())
 	_spawn_slots()
 	_spawn_tiles()
 
 func _spawn_slots() -> void:
-	var slots_data: Array = current_level.get("slots", [])
-	for slot_data in slots_data:
+	for slot_data in current_level.get("slots", []):
 		var slot: BoardSlot = BoardSlotSCN.instantiate()
 		add_child(slot)
 		slot.global_position = Vector2(slot_data.x, slot_data.y)
@@ -77,7 +114,6 @@ func _spawn_tiles() -> void:
 	var center_x: float = get_viewport_rect().size.x / 2.0
 	var pool_y: float = 850.0
 	var spacing: float = 140.0
-	
 	for i in pool_data.size():
 		var tile: HexTile = HexTileSCN.instantiate()
 		add_child(tile)
@@ -89,8 +125,8 @@ func _spawn_tiles() -> void:
 		tile.tile_clicked.connect(_on_tile_clicked)
 
 func _on_next_level() -> void:
+	_play_ui(SFX_CLICK)
 	if game_finished:
-		# Drugi klik — vrati na naslovni
 		game_finished = false
 		ui.visible = false
 		ui.hide_win()
@@ -100,14 +136,14 @@ func _on_next_level() -> void:
 				child.queue_free()
 		$TitleScreen.visible = true
 	elif current_level_index >= LEVELS.size() - 1:
-		# Poslednji level pobedjen — pokazi Gotovo
 		game_finished = true
-		ui.show_win("Gotovo!", "Prosli ste sve nivoe. Pritisnite za pocetak.")
+		ui.show_win("Gotovo!", "Prosli ste sve nivoe. Pritisnite za pocetak.", true)
 	else:
 		current_level_index += 1
 		_load_level(current_level_index)
 
 func _on_tile_clicked(tile: HexTile) -> void:
+	_play_sfx(SFX_PICKUP)
 	for slot in get_tree().get_nodes_in_group("slots"):
 		if slot.occupied_by == tile:
 			slot.occupied_by = null
@@ -119,9 +155,8 @@ func _on_tile_clicked(tile: HexTile) -> void:
 func _process(_delta: float) -> void:
 	if dragged_tile == null:
 		return
-	var mouse_pos := get_global_mouse_position()
-	dragged_tile.global_position = mouse_pos - drag_offset
-	var nearest := _find_nearest_free_slot(mouse_pos)
+	dragged_tile.global_position = get_global_mouse_position() - drag_offset
+	var nearest := _find_nearest_free_slot(get_global_mouse_position())
 	for slot in get_tree().get_nodes_in_group("slots"):
 		slot.highlight(slot == nearest)
 
@@ -132,12 +167,12 @@ func _input(event: InputEvent) -> void:
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and not event.pressed:
 		if dragged_tile == null:
 			return
-		var mouse_pos := get_global_mouse_position()
-		var nearest := _find_nearest_free_slot(mouse_pos)
+		var nearest := _find_nearest_free_slot(get_global_mouse_position())
 		if nearest != null:
 			dragged_tile.global_position = nearest.global_position
 			nearest.occupied_by = dragged_tile
 			nearest.highlight(false)
+			_play_sfx(SFX_SNAP)
 		else:
 			dragged_tile.global_position = dragged_tile.home_pos
 		dragged_tile = null
@@ -161,11 +196,10 @@ func _check_win() -> void:
 		if slot.is_free():
 			return
 	if _validate_edges(slots):
-		var molecule: String = current_level.get("molecule", "")
-		var hint: String = current_level.get("hint", "")
-		ui.show_win(molecule, hint)
+		_play_sfx(SFX_WIN)
+		ui.show_win(current_level.get("molecule", ""), current_level.get("hint", ""))
 	else:
-		print("Veze se ne poklapaju!")
+		_play_sfx(SFX_ERROR)
 
 func _validate_edges(slots: Array) -> bool:
 	const NEIGHBOR_DIST: float = 150.0
@@ -177,8 +211,7 @@ func _validate_edges(slots: Array) -> bool:
 				continue
 			var slot_b: BoardSlot = slots[j]
 			var tile_b: HexTile = slot_b.occupied_by
-			var dist := slot_a.global_position.distance_to(slot_b.global_position)
-			if dist > NEIGHBOR_DIST:
+			if slot_a.global_position.distance_to(slot_b.global_position) > NEIGHBOR_DIST:
 				continue
 			var edge_idx := _get_edge_index(slot_a.global_position, slot_b.global_position)
 			var opposite_idx := (edge_idx + 3) % 6
@@ -191,13 +224,23 @@ func _get_edge_index(from: Vector2, to: Vector2) -> int:
 	var best_idx := 0
 	var best_dot := -2.0
 	for i in 6:
-		var angle := deg_to_rad(30.0 + 60.0 * i)
-		var edge_dir := Vector2(cos(angle), sin(angle))
-		var dot := dir.dot(edge_dir)
+		var dot := dir.dot(Vector2(cos(deg_to_rad(30.0+60.0*i)), sin(deg_to_rad(30.0+60.0*i))))
 		if dot > best_dot:
 			best_dot = dot
 			best_idx = i
 	return best_idx
 
 func _on_reset() -> void:
+	_play_ui(SFX_CLICK)
 	_load_level(current_level_index)
+
+func _on_back() -> void:
+	_play_ui(SFX_CLICK)
+	game_finished = false
+	current_level_index = 0
+	ui.visible = false
+	ui.hide_win()
+	for child in get_children():
+		if child is HexTile or child is BoardSlot:
+			child.queue_free()
+	$TitleScreen.visible = true

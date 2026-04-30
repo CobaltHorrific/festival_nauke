@@ -1,9 +1,10 @@
 [gd_scene format=3 uid="uid://byqymgqhinkpv"]
 
 [ext_resource type="Script" uid="uid://bf0sdjym7y7fs" path="res://scripts/Main.gd" id="1_elqb8"]
-[ext_resource type="Texture2D" uid="uid://bg2f7epctwgo5" path="res://assets/Sprites/background_blue.png" id="2_rarhs"]
+[ext_resource type="Texture2D" uid="uid://bg2f7epctwgo5" path="res://assets/sprites/background_blue.png" id="2_rarhs"]
 [ext_resource type="PackedScene" uid="uid://eemmybxpu1ip" path="res://scenes/UI.tscn" id="2_rvslj"]
 [ext_resource type="PackedScene" uid="uid://y3txj6st6fpo" path="res://scenes/TitleScreen.tscn" id="3_0bbpv"]
+[ext_resource type="AudioStream" uid="uid://besb0iaor2w3w" path="res://assets/sounds/music/music_loop.ogg" id="5_vcsgt"]
 
 [node name="Main" type="Node2D" unique_id=1634408659]
 script = ExtResource("1_elqb8")
@@ -12,6 +13,8 @@ script = ExtResource("1_elqb8")
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+offset_right = 1920.0
+offset_bottom = 1080.0
 grow_horizontal = 2
 grow_vertical = 2
 texture = ExtResource("2_rarhs")
@@ -20,3 +23,12 @@ expand_mode = 1
 [node name="UI" parent="." unique_id=1386058611 instance=ExtResource("2_rvslj")]
 
 [node name="TitleScreen" parent="." unique_id=2042531822 instance=ExtResource("3_0bbpv")]
+
+[node name="MusicPlayer" type="AudioStreamPlayer" parent="." unique_id=2146869011]
+stream = ExtResource("5_vcsgt")
+volume_db = -3.0
+parameters/looping = false
+
+[node name="SFXPlayer" type="AudioStreamPlayer" parent="." unique_id=1826057944]
+
+[node name="UIPlayer" type="AudioStreamPlayer" parent="." unique_id=1585617454]

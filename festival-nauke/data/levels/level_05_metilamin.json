@@ -1,0 +1,21 @@
+{
+    "name": "Metanol",
+    "molecule": "CH3OH",
+    "hint": "Jednostavan alkohol. Poveži C i O, pa dodaj vodonike.",
+    "slots": [
+        { "x": 960, "y": 440 }, 
+        { "x": 1050, "y": 440 },
+        { "x": 915, "y": 353 },
+        { "x": 915, "y": 527 },
+        { "x": 870, "y": 440 },
+        { "x": 1095, "y": 353 }
+    ],
+    "pool": [
+        { "element": "C", "edges": [0, 1, 0, 1, 1, 1] },
+        { "element": "O", "edges": [1, 0, 1, 0, 1, 0] },
+        { "element": "H", "edges": [0, 0, 0, 1, 0, 0] },
+        { "element": "H", "edges": [0, 0, 0, 0, 1, 0] },
+        { "element": "H", "edges": [0, 0, 0, 0, 0, 1] },
+        { "element": "H", "edges": [0, 0, 1, 0, 0, 0] }
+    ]
+}
